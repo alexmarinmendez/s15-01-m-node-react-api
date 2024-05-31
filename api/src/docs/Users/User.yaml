@@ -1,0 +1,205 @@
+paths:
+  # /api/user:
+  #   get:
+  #     summary: Obtiene todos los usuarios
+  #     tags:
+  #       - User
+  #     responses:
+  #       "200":
+  #         description: Los usuarios fueron devueltos satisfactoriamente
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: '#components/schemas/User'
+  #       "500":
+  #         description: Error del servidor
+  # /api/user/{uid}:
+  #   get:
+  #     summary: Obtiene un user a partir de su id
+  #     tags:
+  #       - User
+  #     parameters:
+  #     - name: uid
+  #       in: path
+  #       required: true
+  #       description: ID del usuario que se busca
+  #       schema:
+  #         $type: String
+  #     responses:
+  #       "200":
+  #         description: Usuario encontrado
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#components/schemas/User'
+  #   put:
+  #     summary: Actualizar un user a partir del ID
+  #     tags:
+  #       - User
+  #     parameters:
+  #     - name: uid
+  #       in: path
+  #       required: true
+  #       description: ID del usuario que se quiere actualizar
+  #       schema:
+  #         $type: String
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#components/requestBodies/updateUser'
+  /api/user/register:
+    post:
+      tags:
+        - User
+      summary: Registra un nuevo usuario
+      requestBody:
+        content:
+          application/json:
+             schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test
+                email:
+                  type: string
+                  example: noone@gmail.com
+                password:
+                  type: string
+                  example: nothing
+              required:
+                - name
+                - email
+                - password
+      responses:
+        '200':
+          description: Respuesta satisfactoria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                required:
+                  - status
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: All fields are required
+                required:
+                  - status
+                  - message
+  /api/user/login:
+    post:
+      tags:
+        - User
+      summary: Inicia la sesión de un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: noone@gmail.com
+                password:
+                  type: string
+                  example: nothing
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Respuesta satisfactoria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjU3ODJkYTQ0YmJmOTRhNjhmYTZiM2QiLCJuYW1lIjoiYXNkIiwiaWF0IjoxNzE3MDg2NzE3LCJleHAiOjE3MTcwOTAzMTd9.ieDpCvx9PT5PRvReKMLepNvcLqYCGigUqy8Kf33g4HU
+                required:
+                  - status
+                  - payload
+        '401':
+          description: Datos invalidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid password/email
+                required:
+                  - status
+                  - message
+  
+    
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID auto generado by mongo
+        name:
+          type: String
+          description: Nombre y Apellido
+        email:
+          type: String
+          description: E-mail
+        password:
+          type: String
+          description: Contraseña
+      example:
+        _id: ObjectId("644081a93f0625dc193bc594")
+        name: Javier Milei
+        email: noone@gmail.com
+        password: nothing
+
+  requestBodies:
+    updateUser:
+      type: object
+      properties:
+        name:
+          type: String
+          description: Nombre y Apellido
+        email:
+          type: String
+          description: E-mail
+        password:
+          type: String
+          description: Contraseña
+      example:
+        name: Javier Milei
+        email: noone@gmail.com
+        password: nothing
